@@ -24,12 +24,13 @@ class _ConstructorPlaceholder:
 
     def make_dataclass(self, bases):
         assert self.fields is not None
+        namespace = {}
         if isinstance(self.fields, tuple):
             fields = [(f"f{i:}", t.to_typehint()) for i, t in enumerate(self.fields)]
-            return make_dataclass(self.name, fields, bases=bases, namespace={"__repr__": reduced_repr})
+            namespace["__repr__"] = reduced_repr
         else:
             fields = list(self.fields.items())
-            return make_dataclass(self.name, fields, bases=bases)
+        return make_dataclass(self.name, fields, bases=bases, namespace=namespace, slots=True, frozen=True)
 
 
 class _ConstructorDict(dict):
